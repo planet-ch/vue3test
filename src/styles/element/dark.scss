@@ -1,0 +1,39 @@
+// only scss variables
+
+$--colors: (
+  "primary": (
+    "base": #589ef8,
+  ),
+);
+
+@forward "element-plus/theme-chalk/src/dark/var.scss" with (
+  $colors: $--colors
+);
+
+:root{
+  --globalBackground: #f5f8fc;
+  --pageContainner: #fff;
+  --cardBodShadow: 0 2px 7px 0 rgba(21,112,232,.12);
+  --headerBackground: #fff;
+  --headerShadow: 0 2px 10px 0 rgba(95,95,95,.21);
+  --menuWrapBackground: #fff;
+  --menuActiveBackground: var(--ep-menu-active-color);
+  --wgSearch: var(--ep-bg-color-overlay);
+  --fontColor: #000;
+  --fontHoverColor: #409eff;
+  --loadingBackground: var(--ep-mask-color);
+}
+
+html.dark{
+  --globalBackground: rgba(20, 19, 50, 1);
+  --pageContainner: rgba(29, 29, 65, 1);
+  --cardBodShadow: none;
+  --headerBackground: rgba(29, 29, 65, 1);
+  --headerShadow: none;
+  --menuWrapBackground: rgba(29, 29, 65, 1);
+  --menuActiveBackground: rgba(99, 89, 233, 1);
+  --wgSearch: rgba(29, 29, 65, 1);
+  --fontColor: #fff;
+  --fontHoverColor: rgba(99, 89, 233, 1);
+  --loadingBackground: rgba(29, 29, 65, 0.1);
+}

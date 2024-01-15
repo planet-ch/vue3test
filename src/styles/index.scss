@@ -1,0 +1,72 @@
+// import dark theme
+@use "element-plus/theme-chalk/src/dark/css-vars.scss" as *;
+
+// :root {
+//   --ep-color-primary: red;
+// }
+
+body {
+  font-family: Inter, system-ui, Avenir, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+a {
+  color: var(--ep-color-primary);
+}
+
+code {
+  border-radius: 2px;
+  padding: 2px 4px;
+  background-color: var(--ep-color-primary-light-9);
+  color: var(--ep-color-primary);
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  //box-sizing: border-box;
+}
+
+.page-container{
+  width: 100%;
+  padding-top: 40px;
+  min-height: calc(100vh - 64px);
+  .card-box{
+    box-sizing: border-box;
+    width: 100%;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: var(--cardBodShadow);
+    margin-bottom: 20px;
+    background: var(--pageContainner);
+    .title{
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      margin-bottom: 20px;
+      .blue{
+        width: 4px;
+        height: 18px;
+        line-height: 20px;
+        background: var(--fontHoverColor);
+        border-radius: 1px;
+        margin: 0 12px 0 0 !important;
+        &.ep-divider--vertical{
+          border-left: none;
+        }
+      }
+    }
+    &.header-wrap{
+      display: flex;
+      align-items: center;
+      padding: 20px 30px;
+    }
+  }
+  .ep-loading-mask{
+    top: 40px;
+    background: var(--loadingBackground) !important;
+  }
+}
