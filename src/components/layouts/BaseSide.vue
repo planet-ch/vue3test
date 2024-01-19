@@ -1,9 +1,5 @@
 <template>
-  <div class="menu-wrap">
-    <div class="logo">
-      <img :src="logoSrc" alt="吾股中台">
-      <h3>吾股中台</h3>
-    </div>
+  <div class="menu-wrap pc">
     <el-menu
         class="el-menu-vertical-demo"
         :collapse="isCollapse"
@@ -27,39 +23,18 @@
 
 <script lang="ts" setup>
 import { ref, shallowRef, watch, computed } from "vue";
-import { isDark } from "~/composables";
 import { useRouter, useRoute } from 'vue-router'
 import {
   House,
   Money,
   Coin
 } from "@element-plus/icons-vue";
-
-// 实时计算tooltip显示条件，目前只有activated
-const logoSrc = computed(() => {
-  return isDark.value ? new URL('@/assets/img/wogoo_dark.png', import.meta.url).href : new URL('@/assets/img/wogoo.png', import.meta.url).href
-})
-
-const menus = ref([
-  {
-    name: '首页',
-    icon: shallowRef(House),
-    path: '/'
-  },
-  {
-    name: 'A股',
-    icon: shallowRef(Money),
-    path: '/stock'
-  },
-  {
-    name: '指数',
-    icon: shallowRef(Coin),
-    path: '/stockIndex'
-  }
-])
+import {useStore} from "vuex";
+import { menus } from '@/config/menus'
 const isCollapse = ref(false);
 const fontSize = 22
 const route = useRoute()
+const store = useStore()
 const activeIndex = ref('0');
 watch(() => route.path, (v) => {
   const index = menus.value.findIndex((item) => item.path === v)
@@ -74,6 +49,7 @@ const toggle = () => {
   isCollapse.value = !isCollapse.value
 }
 const menuClick = (key, index) => {
+  store.commit('stock/clearAll')
   activeIndex.value = index
   router.push(key)
 }
@@ -84,20 +60,6 @@ const menuClick = (key, index) => {
   display: flex;
   flex-flow: column;
   background: var(--menuWrapBackground);
-  .logo{
-    width: 100%;
-    height: 80px;
-    background: var(--menuWrapBackground);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    img{
-      display: block;
-      width: 50px;
-      height: 50px;
-      margin-right: 10px;
-    }
-  }
 }
 </style>
 
@@ -105,9 +67,10 @@ const menuClick = (key, index) => {
 .menu-wrap{
   display: flex;
   position: relative;
-  z-index: 1000;
+  z-index: 998;
   width: 180px;
   box-shadow: 0 2px 10px 0 rgba(0,0,0,.15);
+  padding-top: 10px;
   .ep-menu{
     display: flex;
     flex-direction: column;

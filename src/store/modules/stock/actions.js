@@ -1,39 +1,56 @@
-import {getTakingData} from "@/api/stock";
+import { getSearchData } from "@/api/stock";
+import { updateTableData } from "@/store/utils";
+
 // actions
 const actions = {
-    async search ({ commit }, { value }) {
+    async search ({ commit, state }, { value }) {
         commit('loading', true)
-        commit('setSearchValue', value)
+        commit('setSearchValue', value.text)
         const params = {
-            code: '000725'
+            ...value,
+            token: '26027edd1eedf8b21a3a070062b3d9ba'
         }
-        const data = await getTakingData(params)
-        console.log(data);
-        const list = value.split('').map((v, i) => {
-            let randomNumber1 = Math.floor(Math.random() * 10) + 1;
-            let randomNumber4 = Math.floor(Math.random() * 10) + 1;
-            let randomNumber2 = (Math.random() * 100).toFixed(2);
-            let randomNumber3 = (Math.random() * 1000).toFixed(2);
-            return {
-                '时间区间': `2023-0${i + 1}-03`,
-                '净利润(元)': randomNumber1 + '亿',
-                '净利润(同比增长率)(%)': randomNumber2,
-                '扣非净利润(元)': randomNumber1 + '亿',
-                '营业收入(元)': randomNumber2 + '亿',
-                '营业收入(同比增长率)(%)': randomNumber2,
-                '销售费用(元)': randomNumber3 + '万',
-                '管理费用(元)': randomNumber1 + '亿',
-                '研发费用(元)': randomNumber4 + '亿',
-                '财务费用(元)': randomNumber1 + '亿',
-                '基本每股收益(元)': randomNumber1,
-            }
-        })
-        commit('search', list)
+        delete params.tableLoading
+        delete params.condition
+        const data = await getSearchData(params).catch(() => commit('loading', false))
+        const status = !!data ? 1 : 2
+        const actionKeys = ['', 'search', 'stockIndexSearch']
+        console.log(data, 'data出问题了？', value);
         commit('loading', false)
+        if (data) {
+            commit(actionKeys[Number(value.classify)], {
+                ...(data?.data),
+                status
+            })
+        }
         // setTimeout(() => {
         //     commit('search', list)
         //     commit('loading', false)
-        // }, 100000)
+        // }, 1500)
+    },
+
+    /*
+    * updateTableData: 更新已确定搜索条件下的 指定表格数据 - 一般由翻页触发
+    * */
+    async updateTableData ({ commit, state }, { value }) {
+        const params = {
+            ...value,
+            token: '26027edd1eedf8b21a3a070062b3d9ba'
+        }
+        delete params.tableLoading
+        delete params.condition
+        const jsonData = value.condition
+        const data = await getSearchData(params, jsonData)
+        const actionKeys = ['', 'search', 'stockIndexSearch']
+        const stateKeys = ['', 'result', 'stockIndexResult']
+        console.log(data, 'data出问题了？', value);
+        if (data) {
+            const source = state[stateKeys[Number(value.classify)]]
+            const newData = updateTableData(source, data.data, jsonData.table)
+            commit(actionKeys[Number(value.classify)], {
+                ...(newData)
+            })
+        }
     }
 }
 

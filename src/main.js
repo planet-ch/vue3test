@@ -14,6 +14,10 @@ import "uno.css";
 
 // If you want to use ElMessage, import it.
 import "element-plus/theme-chalk/src/message.scss";
+import VConsole from 'vconsole';
+if (window.location.href.indexOf('vconsole') > -1) {
+    new VConsole();
+}
 
 const app = createApp(App);
 app.use(store)

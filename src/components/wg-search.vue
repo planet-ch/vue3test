@@ -49,7 +49,7 @@
               >
                 <template #reference>
                   <el-icon style="cursor: pointer" :size="18">
-                    <Delete />
+                    <Delete/>
                   </el-icon>
                 </template>
               </el-popconfirm>
@@ -69,14 +69,16 @@
 <script setup>
 const HISTORY_KEY = 'WG/ADMIN/SEARCH/HISTORY/KEY'
 const MAX_HISTORY_COUNT = 10
-import {computed, ref} from 'vue'
+import {computed, ref, watch} from 'vue'
 import {useStore} from 'vuex'
-import { onClickOutside } from '@vueuse/core'
+import {onClickOutside} from '@vueuse/core'
 import {
   Delete, GoldMedal,
   Search
 } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import {ElMessage} from 'element-plus'
+import {useRoute, useRouter} from 'vue-router'
+import random from 'lodash/random';
 
 let ignoreFocusEvent = false
 
@@ -88,11 +90,12 @@ const listRef = ref()
 const activated = ref(false)
 const dropdownWidth = ref('')
 const historyList = ref([])
-// const router = useRouter()
+const route = useRoute()
+const router = useRouter()
 const recommend = ref([
   '最近三年累计现金分红金额低于最近三年年均净利润30%',
-  '建筑装饰股票精选',
-  '证券股票精选'
+  '贵州茅台去年三季报的十大股东和净利润',
+  '净利润涨幅超0.3'
 ])
 /* 历史记录相关操作 */
 const getHistory = () => {
@@ -108,7 +111,6 @@ const addHistory = (keyword) => {
   history.unshift(keyword)
   const result = [...new Set(history.splice(0, MAX_HISTORY_COUNT))]
   window.localStorage.setItem(HISTORY_KEY, JSON.stringify(result))
-  console.log(history, '先取出来所有', keyword, inHistoryIndex)
 }
 const deleteAll = () => {
   window.localStorage.setItem(HISTORY_KEY, '[]')
@@ -134,8 +136,29 @@ const handleRecommendClick = (key) => {
 }
 
 /* 搜索相关操作 */
+
+watch(() => route.query, (v) => {
+  if (JSON.stringify(route.query) !== '{}') {
+    if (route.query.keywords && route.query.classify) {
+      // 有参数就请求
+      const params = {
+        text: route.query.keywords,
+        classify: route.meta.classify,
+        page: 1,
+        page_size: 10
+      }
+      keywords.value = params.text
+      addHistory(keywords.value)
+      searchFetch(params)
+    }
+  } else {
+    keywords.value = ''
+  }
+})
+
 const searchFetch = (value) => store.dispatch('stock/search', {value})
 const keywordsChange = () => {
+  console.log(3);
   if (keywords.value.length === 0) {
     ElMessage({
       message: '请输入有效内容查询',
@@ -143,8 +166,14 @@ const keywordsChange = () => {
     })
     return
   }
-  addHistory(keywords.value)
-  searchFetch(keywords.value)
+  router.replace({
+    name: route.name,
+    query: {
+      keywords: keywords.value,
+      classify: route.meta.classify,
+      sj: random(0, 10000000)
+    }
+  })
 }
 
 /* 弹窗展开之前操作 1. 刷新历史记录列表 2. 同步最新inputk宽度 */
@@ -153,7 +182,9 @@ const onSuggestionShow = () => {
   let inputWidth = '100%'
   try {
     inputWidth = inputRef.value.$el.offsetWidth
-  } catch (e) {console.log(e);}
+  } catch (e) {
+    console.log(e);
+  }
   if (suggestionVisible.value) {
     dropdownWidth.value = `${inputWidth}px`
   }
@@ -168,7 +199,7 @@ const suggestionVisible = computed(() => {
 const handleMouseDown = (event) => {
   if (
       (event.target)?.tagName !== 'INPUT'
-) {
+  ) {
     activated.value = true
   }
 }
@@ -216,13 +247,16 @@ onClickOutside(inputRef, (e) => {
   .ep-input {
     height: 100%;
   }
-  .ep-input__wrapper.is-focus{
+
+  .ep-input__wrapper.is-focus {
     box-shadow: 0 0 0 1px var(--fontHoverColor) inset !important;
   }
 }
-.wg-search{
+
+.wg-search {
   background: var(--wgSearch) !important;
-  &.ep-popper{
+
+  &.ep-popper {
     padding: 8px 0 !important;
   }
 }
@@ -231,6 +265,7 @@ onClickOutside(inputRef, (e) => {
   box-sizing: border-box;
   padding: 10px 12px;
   font-size: 14px;
+
   .wg-recommend-list {
     margin-bottom: 20px;
 
@@ -258,6 +293,7 @@ onClickOutside(inputRef, (e) => {
       color: var(--fontColor);
       cursor: pointer;
       line-height: 30px;
+
       &:hover {
         color: var(--fontHoverColor);
       }

@@ -5,9 +5,9 @@ import StockIndex from '@/pages/stockIndex.vue'
 import Index from '@/pages/index.vue'
 
 const routes = [
-    { path: '/', component: Index },
-    { path: '/stock', component: Stock },
-    { path: '/stockIndex', component: StockIndex }
+    { path: '/', component: Index, name: 'index', meta: { title: '首页', classify: '1' } },
+    { path: '/stock', component: Stock, name: 'stock', meta: { title: 'A股', classify: '1' } },
+    { path: '/stockIndex', component: StockIndex, name: 'stockIndex', meta: { title: '指数', classify: '2' } }
 ]
 
 const router = createRouter({
