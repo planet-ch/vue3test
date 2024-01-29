@@ -6,7 +6,6 @@ export const getSearchData = (data, jsonData) => {
         url: '/chat/get_data',
         baseURL: '/wogoo/api',
         method: 'post',
-        params: data,
-        data: jsonData
+        data: { ...data, ...jsonData }
     });
 };

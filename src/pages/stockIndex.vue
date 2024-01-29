@@ -5,6 +5,16 @@
         <div class="title">
           <el-divider direction="vertical" class="blue" />
           <h3>已选条件</h3>
+          <div class="box-item" v-if="!!result.prompt">
+            <el-popover placement="right" :width="400" trigger="hover">
+              <template #reference>
+                <el-icon><WarningFilled /></el-icon>
+              </template>
+              <div>
+                <p v-for="(item, index) in result.prompt">{{ index + 1 }}. {{ item }}</p>
+              </div>
+            </el-popover>
+          </div>
         </div>
         <div class="tags">
           <el-tag
@@ -29,6 +39,7 @@
 import { ref, computed, onMounted, reactive, watch } from 'vue'
 import { useStore } from 'vuex'
 import * as echarts from 'echarts';
+import {WarningFilled} from "@element-plus/icons-vue";
 const now = new Date()
 const store = useStore()
 const result = computed(() => store.state.stock.stockIndexResult)
@@ -57,6 +68,19 @@ const defaultProps = reactive({
 </style>
 
 <style lang="scss">
+.box-item{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  cursor: pointer;
+  .demo{
+    list-style: none;
+    li {
+      text-align: center;
+    }
+  }
+}
 .answer-wrapper{
   .ep-table__body-wrapper{
     .ep-scrollbar{

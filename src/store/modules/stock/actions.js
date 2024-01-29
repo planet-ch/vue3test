@@ -22,6 +22,8 @@ const actions = {
                 ...(data?.data),
                 status
             })
+        } else {
+            commit('clearAll')
         }
         // setTimeout(() => {
         //     commit('search', list)
