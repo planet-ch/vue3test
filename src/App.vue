@@ -23,7 +23,7 @@ export default defineComponent({
     ElConfigProvider,
   },
   setup() {
-    document.title = '吾股中台'
+    document.title = '吾股中台2222'
     return {
       locale: zhCn,
     }
