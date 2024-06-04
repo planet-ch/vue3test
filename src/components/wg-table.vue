@@ -1,6 +1,10 @@
 <template>
   <el-table id="index" border stripe fit v-loading="loading" :data="listData" style="position: static;">
-    <el-table-column v-for="(item) in columns" :prop="item" :label="item" min-width="150" />
+    <el-table-column v-for="(item) in columns" :prop="item" :label="item" min-width="150">
+      <template #default="scope">
+        <div v-html="getCellData(scope.row, item)"></div>
+      </template>
+    </el-table-column>
   </el-table>
   <div class="pagination" v-if="paginationData.total > 10">
     <el-pagination
@@ -31,6 +35,20 @@ const selection = ref([])
 const pageSize = ref(10)
 
 const loading = ref(false)
+
+const getCellData = (cellData, key) => {
+  const defaultKeys = ['吾股排名变化']
+  const findIndex = defaultKeys.findIndex(item => key.includes(item))
+  const value = cellData[key]
+  if (findIndex > -1) {
+    const numValue = String(value).match(/\d+/g)
+    console.log(numValue, '?');
+    const arrow = cellData[key] <= 0 ? `<b style="color: red;">↑</b>` : `<b style="color: green;">↓</b>`
+    return `<span>${numValue[0]} ${arrow}</span>`
+  }
+  return `<span>${value}</span>`
+}
+
 const searchFetch = (value) => store.dispatch('stock/updateTableData', {value})
 const listData = computed(() => {
   return JSON.parse(props.data)

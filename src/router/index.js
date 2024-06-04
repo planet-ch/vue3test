@@ -3,11 +3,13 @@ import Answer from '@/pages/answer.vue'
 import Stock from '@/pages/stock.vue'
 import StockIndex from '@/pages/stockIndex.vue'
 import Index from '@/pages/index.vue'
+import Live from '@/pages/live/index.vue'
 
 const routes = [
     { path: '/', component: Index, name: 'index', meta: { title: '首页', classify: '1' } },
     { path: '/stock', component: Stock, name: 'stock', meta: { title: 'A股', classify: '1' } },
-    { path: '/stockIndex', component: StockIndex, name: 'stockIndex', meta: { title: '指数', classify: '2' } }
+    { path: '/stockIndex', component: StockIndex, name: 'stockIndex', meta: { title: '指数', classify: '2' } },
+    { path: '/live', component: Live, name: 'live', meta: { title: '直播' } }
 ]
 
 const router = createRouter({

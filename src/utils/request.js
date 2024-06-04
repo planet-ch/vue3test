@@ -41,12 +41,22 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response) => {
         const res = response.data;
-        // 0:正确 100: 查询不到 其他：内部错误 - 直接使用后端返回
+        // 0:正确 100: 查询不到(语句合法) 101：查询不到（语句不合法） 其他：内部错误 - 直接使用后端返回
         if (res.code !== 0) {
             switch (res.code) {
                 case 100: {
                     ElMessage.warning('您搜索的语句暂时查询不到结果～')
-                    return
+                    return {
+                        ...res,
+                        data: {
+                            ...res.data,
+                            list: []
+                        }
+                    }
+                }
+                case 101: {
+                    ElMessage.warning('您搜索的语句暂时查询不到结果～')
+                    return false
                 }
                 default: {
                     ElMessage.error(res.errmsg)

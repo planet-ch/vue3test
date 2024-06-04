@@ -13,6 +13,7 @@ const actions = {
         delete params.tableLoading
         delete params.condition
         const data = await getSearchData(params).catch(() => commit('loading', false))
+        console.log(data, 'data');
         const status = !!data ? 1 : 2
         const actionKeys = ['', 'search', 'stockIndexSearch']
         console.log(data, 'data出问题了？', value);
